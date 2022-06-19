@@ -8,30 +8,26 @@
 
     <div id="principal">
         <h1>Ultimas entradas</h1>
-        <article class="entrada">
-            <h2>Titulo de mi entrada</h2>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis ad quibusdam, maiores cumque nulla iusto animi, est excepturi quae totam iste? Laborum hic aperiam tempore ipsum voluptatibus consectetur reprehenderit porro?
-            </p>
-        </article>
-        <article class="entrada">
-            <h2>Titulo de mi entrada</h2>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis ad quibusdam, maiores cumque nulla iusto animi, est excepturi quae totam iste? Laborum hic aperiam tempore ipsum voluptatibus consectetur reprehenderit porro?
-            </p>
-        </article>
-        <article class="entrada">
-            <h2>Titulo de mi entrada</h2>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis ad quibusdam, maiores cumque nulla iusto animi, est excepturi quae totam iste? Laborum hic aperiam tempore ipsum voluptatibus consectetur reprehenderit porro?
-            </p>
-        </article>
-        <article class="entrada">
-            <h2>Titulo de mi entrada</h2>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis ad quibusdam, maiores cumque nulla iusto animi, est excepturi quae totam iste? Laborum hic aperiam tempore ipsum voluptatibus consectetur reprehenderit porro?
-            </p>
-        </article>
+
+        <?php
+            $entradas = conseguirUltimasEstradas($db);
+            if(!empty($entradas)):
+                while($entrada = mysqli_fetch_assoc($entradas)):
+        ?>
+
+       
+            <article class="entrada">
+                <h2><?=$entrada['titulo'] ?></h2>
+                <span class="fecha"><?=$entrada['categoria'].' | '.$entrada['fecha']?></span>
+                <p>
+                <?=substr($entrada['descripcion'], 0, 300)."..."; ?>
+                </p>
+            </article>
+        
+        <?php
+                endwhile;
+            endif; 
+        ?>
 
         <div id="ver-todas">
             <a href="">Ver todas las entradas</a>

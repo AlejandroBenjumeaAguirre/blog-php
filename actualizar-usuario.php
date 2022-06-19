@@ -49,18 +49,33 @@ if(isset($_POST)){
 
     if(count($errores) == 0 ){
         $guardar_usuario = true;
+        $usuario = $_SESSION['usuario'];
         
         // Cifrar la contraseña
         $password_segura = password_hash($password, PASSWORD_BCRYPT, ['cost'=>4]);
         
-        // Insertamos usuario en la BD
-        $sql = "INSERT INTO usuarios VALUES(null, '$nombre', '$apellido', '$email', '$password_segura', CURDATE());";
-        $guardar = mysqli_query($db, $sql);
+        // Comprobar si el email ya existe
+        $sql = "SELECT id, email FROM usuarios WHERE email = '$email';";
+        $isset_email = mysqli_query($db, $sql);
+        $isset_user = mysqli_fetch_assoc($isset_email);
 
-        if($guardar){
-            $_SESSION['completado'] = "El registro sae ha compeltado con exito";
-        }else {
-            $_SESSION['errores']['general'] = "Fallo al guardar el usuario";
+        if($isset_user['id'] == $usuario['id'] || empty($isset_user)){
+
+            // Actualizar usuario en la BD
+            $sql = "UPDATE usuarios SET nombre = '$nombre', apellidos = '$apellido', email = '$email', password = '$password_segura' WHERE id = ".$usuario['id'].";";
+            $guardar = mysqli_query($db, $sql);
+    
+            if($guardar){
+                $sql = "SELECT * FROM usuarios WHERE id = ".$_SESSION['usuario']['id'].";";
+                $_SESSION['usuario'] = mysqli_fetch_assoc(mysqli_query($db, $sql));
+    
+                $_SESSION['completado'] = "La actualizacion del usuariuo se ha realizado con exito";
+            }else {
+                $_SESSION['errores']['general'] = "Fallo al actualizar el usuario";
+            }
+
+        }else{
+            $_SESSION['errores']['general'] = "El usuario ya existe";
         }
 
     }else {
@@ -70,4 +85,4 @@ if(isset($_POST)){
 
 }
 
-header('Location: index.php');
+header('Location: mis-datos.php');
